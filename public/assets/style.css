@@ -1,0 +1,703 @@
+/* =====================================================================
+   Campus Food System — single stylesheet (no frameworks, no CDN)
+   ===================================================================== */
+
+:root {
+    --brand:       #e8590c;
+    --brand-dark:  #c2410c;
+    --brand-soft:  #fff1e6;
+    --ink:         #1f2430;
+    --ink-soft:    #5b6472;
+    --muted:       #8a93a3;
+    --line:        #e6e8ee;
+    --bg:          #f6f4f1;
+    --card:        #ffffff;
+    --green:       #12855b;
+    --green-soft:  #e6f6ef;
+    --amber:       #a16207;
+    --amber-soft:  #fdf5e0;
+    --red:         #b42318;
+    --red-soft:    #fdeceb;
+    --blue:        #175cd3;
+    --blue-soft:   #eaf2fe;
+    --radius:      14px;
+    --shadow:      0 1px 2px rgba(16,24,40,.05), 0 6px 18px rgba(16,24,40,.06);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+/* ---------------------------------------------------------------- icons
+   Inline SVG (includes/icons.php). They inherit colour via currentColor and
+   sit on the text baseline, so an icon inside a button or a badge lines up
+   with the words next to it. */
+.icon-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.ico {
+    flex: 0 0 auto;
+    vertical-align: -0.15em;
+    color: currentColor;
+}
+
+/* Icons that stand in a text row should not add leading of their own */
+.btn .ico, .badge .ico, .cat-pills .ico, .tabbar .ico, .admin-nav .ico { display: block; }
+.btn .ico { margin-right: 2px; }
+.btn .ico:last-child { margin-right: 0; }
+
+.ico-badge { opacity: .85; }
+.badge { display: inline-flex; align-items: center; gap: 5px; }
+.cat-pills a { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Dish / category icon tile. With a photo above it this is a fallback, and
+   the mobile layout hides it entirely (see the media query below). */
+.item-icon { color: var(--brand-dark); }
+.item-icon .ico { display: block; }
+.item-icon, .thumb-empty { color: var(--brand-dark); }
+
+/* Empty-state icon: sized by the caller, coloured by the state it sits in */
+.empty .big { line-height: 1; }
+.empty .big .ico { margin: 0 auto; color: var(--muted); }
+
+/* The tab bar stacks an icon over a word */
+.tabbar .tab-ico { display: grid; place-items: center; height: 24px; }
+
+/* Icons inline with text */
+.note-line .ico { display: inline-block; vertical-align: -0.2em; }
+.timeline .dot { display: grid; place-items: center; }
+.timeline .dot .ico-status { color: var(--brand-dark); }
+
+/* Icon picker in the admin forms: a radio grid, 44px targets on a phone. */
+.icon-picker {
+    display: grid; gap: 6px;
+    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    margin-top: 4px;
+}
+.icon-option {
+    position: relative; display: flex; flex-direction: column;
+    align-items: center; gap: 4px; padding: 9px 4px 7px;
+    border: 1px solid var(--line); border-radius: 10px;
+    background: #fff; cursor: pointer; text-align: center;
+}
+.icon-option:hover { border-color: #f2c9ae; background: var(--brand-soft); }
+.icon-option input { position: absolute; opacity: 0; pointer-events: none; }
+.icon-option .ico { color: var(--ink-soft); }
+.icon-option-name {
+    font-size: .66rem; color: var(--muted); font-family: ui-monospace, monospace;
+    letter-spacing: -.01em;
+}
+.icon-option:has(input:checked) {
+    border-color: var(--brand); background: var(--brand-soft);
+    box-shadow: 0 0 0 2px rgba(232,89,12,.15);
+}
+.icon-option:has(input:checked) .ico { color: var(--brand-dark); }
+.icon-option:has(input:checked) .icon-option-name { color: var(--brand-dark); }
+/* Keyboard users still need to see where they are. */
+.icon-option input:focus-visible + .ico {
+    outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 6px;
+}
+.field-label { display: block; font-weight: 600; font-size: .87rem; margin-bottom: 5px; }
+
+/* Number fields: the cart has real -/+ buttons, so the tiny browser spinners
+   are just noise (and hard to hit on a phone). */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 18px; }
+.page { padding: 26px 18px 60px; min-height: 60vh; }
+
+h1 { font-size: 1.65rem; margin: 0 0 6px; letter-spacing: -.02em; }
+h2 { font-size: 1.2rem;  margin: 0 0 14px; letter-spacing: -.01em; }
+h3 { font-size: 1rem;    margin: 0 0 10px; }
+p  { margin: 0 0 12px; }
+
+a { color: var(--brand-dark); }
+
+.muted  { color: var(--muted); }
+.small  { font-size: .84rem; }
+.center { text-align: center; }
+.right  { text-align: right; }
+.nowrap { white-space: nowrap; }
+.mono   { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+.page-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap; margin-bottom: 20px;
+}
+.page-head p { margin: 0; color: var(--ink-soft); }
+
+/* ---------------------------------------------------------------- topbar */
+.topbar {
+    background: var(--card);
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 30;
+}
+.topbar-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 18px; min-height: 66px; flex-wrap: wrap; padding-top: 8px; padding-bottom: 8px;
+}
+.brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--ink); }
+.brand-mark {
+    width: 40px; height: 40px; display: grid; place-items: center;
+    background: var(--brand-soft); border-radius: 11px; font-size: 1.25rem;
+}
+.brand strong { display: block; line-height: 1.15; font-size: 1.02rem; }
+.brand small  { color: var(--muted); font-size: .74rem; }
+
+.mainnav { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.mainnav a {
+    text-decoration: none; color: var(--ink-soft); font-weight: 500;
+    padding: 8px 11px; border-radius: 9px;
+}
+.mainnav a:hover { background: var(--brand-soft); color: var(--brand-dark); }
+.nav-admin { color: var(--blue) !important; }
+.nav-user  { display: inline-flex; align-items: center; max-width: 170px;
+             overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-user {
+    padding: 6px 10px; background: var(--bg); border-radius: 9px;
+    font-size: .86rem; font-weight: 600; color: var(--ink-soft) !important;
+    text-decoration: none;
+}
+a.nav-user:hover { background: var(--brand-soft); color: var(--brand-dark) !important; }
+.nav-cart { position: relative; }
+.cart-pill {
+    display: inline-block; min-width: 19px; padding: 1px 5px; margin-left: 3px;
+    background: var(--brand); color: #fff; border-radius: 999px;
+    font-size: .72rem; font-weight: 700; text-align: center;
+}
+
+/* --------------------------------------------------------------- buttons */
+.btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 9px 15px; border: 1px solid transparent; border-radius: 10px;
+    background: var(--card); color: var(--ink); font: inherit; font-weight: 600;
+    text-decoration: none; cursor: pointer; line-height: 1.25;
+    transition: background .13s, border-color .13s, transform .05s;
+}
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--brand); color: #fff; }
+.btn-primary:hover { background: var(--brand-dark); }
+.btn-ghost { border-color: var(--line); color: var(--ink-soft); }
+.btn-ghost:hover { background: var(--brand-soft); border-color: #f2c9ae; color: var(--brand-dark); }
+.btn-danger { background: var(--red-soft); color: var(--red); border-color: #f6c9c5; }
+.btn-danger:hover { background: var(--red); color: #fff; }
+.btn-sm { padding: 6px 11px; font-size: .86rem; border-radius: 8px; }
+.btn-block { width: 100%; }
+.btn[disabled], .btn.is-disabled { opacity: .5; pointer-events: none; }
+
+/* ---------------------------------------------------------------- alerts */
+.alert {
+    padding: 11px 14px; border-radius: 10px; margin-bottom: 14px;
+    border: 1px solid transparent; font-size: .92rem;
+}
+.alert-success { background: var(--green-soft); color: var(--green); border-color: #bce7d5; }
+.alert-warn    { background: var(--amber-soft); color: var(--amber); border-color: #f2dfae; }
+.alert-error   { background: var(--red-soft);   color: var(--red);   border-color: #f6c9c5; }
+.alert-info    { background: var(--blue-soft);  color: var(--blue);  border-color: #c9dcfb; }
+
+/* ----------------------------------------------------------------- cards */
+.card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px;
+}
+.card + .card { margin-top: 18px; }
+.card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap; margin-bottom: 14px;
+}
+.card-head h2, .card-head h3 { margin: 0; }
+
+/* --------------------------------------------------------- category pills */
+.cat-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.cat-pills a {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 999px; text-decoration: none;
+    background: var(--card); border: 1px solid var(--line);
+    color: var(--ink-soft); font-weight: 600; font-size: .88rem;
+}
+.cat-pills a:hover { border-color: #f2c9ae; color: var(--brand-dark); }
+.cat-pills a.active { background: var(--brand); border-color: var(--brand); color: #fff; }
+
+/* -------------------------------------------------------------- item grid */
+.item-grid {
+    display: grid; gap: 16px;
+    /* min() keeps the track from forcing the grid wider than its container,
+       which is what used to make phones scroll sideways. */
+    grid-template-columns: repeat(auto-fill, minmax(min(232px, 100%), 1fr));
+}
+.item-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 16px; display: flex; flex-direction: column;
+    min-width: 0;                      /* grid children must be shrinkable */
+}
+.item-top > div { min-width: 0; }      /* so long dish names wrap, not overflow */
+.item-card.is-out { opacity: .62; }
+
+/* ------------------------------------------------------- item photos */
+.item-photo {
+    position: relative;
+    margin: -16px -16px 14px;          /* bleed to the card edges */
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #efece8;
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+.item-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;                  /* real photos, cropped not squashed */
+    display: block;
+}
+.photo-flag {
+    position: absolute; inset: auto 0 0 0;
+    padding: 5px 10px;
+    background: rgba(180,35,24,.92);
+    color: #fff; font-size: .78rem; font-weight: 700;
+    letter-spacing: .03em; text-transform: uppercase;
+}
+.photo-credit {
+    margin: 10px 0 0;
+    padding-top: 8px;
+    border-top: 1px dashed var(--line);
+    color: var(--muted);
+    font-size: .68rem;
+    line-height: 1.35;
+}
+.photo-credit a { color: var(--muted); }
+
+/* Thumbnail used in the admin item list */
+.thumb {
+    width: 46px; height: 46px; flex: 0 0 46px;
+    object-fit: cover; border-radius: 9px;
+    background: #efece8; display: block;
+}
+.thumb-empty {
+    width: 46px; height: 46px; flex: 0 0 46px;
+    border-radius: 9px; background: var(--bg);
+    border: 1px dashed #d8dbe3;
+    display: grid; place-items: center;
+    color: var(--muted); font-size: 1rem;
+}
+.item-cell { display: flex; align-items: center; gap: 11px; }
+
+/* Current photo preview in the item editor */
+.photo-preview {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px; margin-bottom: 12px;
+    background: var(--bg); border-radius: 11px;
+}
+.photo-preview img {
+    width: 108px; height: 81px; object-fit: cover;
+    border-radius: 8px; display: block; background: #efece8;
+}
+.photo-preview .meta { font-size: .74rem; color: var(--ink-soft); line-height: 1.4; }
+.photo-preview .meta strong { display: block; color: var(--ink); font-size: .8rem; }
+
+.item-top { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 10px; }
+.item-icon {
+    width: 48px; height: 48px; flex: 0 0 48px; display: grid; place-items: center;
+    background: var(--brand-soft); border-radius: 12px; font-size: 1.5rem;
+}
+.item-name { font-weight: 700; line-height: 1.25; margin: 0 0 2px; }
+.item-cat  { color: var(--muted); font-size: .76rem; text-transform: uppercase; letter-spacing: .04em; font-weight: 600; }
+.item-desc { color: var(--ink-soft); font-size: .86rem; margin: 0 0 12px; flex: 1; }
+.item-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; }
+.price { font-size: 1.08rem; font-weight: 800; letter-spacing: -.01em; }
+.stock-line { font-size: .78rem; color: var(--muted); margin-top: 3px; }
+.stock-low { color: var(--amber); font-weight: 600; }
+.stock-out { color: var(--red); font-weight: 600; }
+
+/* ------------------------------------------------------------- toolbar */
+.toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 18px; }
+.toolbar .grow { flex: 1 1 220px; }
+
+/* ---------------------------------------------------------------- forms */
+.field { margin-bottom: 14px; }
+.field > label { display: block; font-weight: 600; font-size: .87rem; margin-bottom: 5px; }
+.field .hint { color: var(--muted); font-size: .79rem; margin-top: 4px; }
+
+input[type=file] {
+    width: 100%; padding: 9px 11px; font: inherit; font-size: .88rem;
+    background: #fff; border: 1px dashed #cfd4de; border-radius: 10px;
+    cursor: pointer;
+}
+input[type=file]:hover { border-color: var(--brand); }
+
+input[type=text], input[type=email], input[type=password], input[type=number],
+input[type=tel], input[type=search], input[type=time], select, textarea {
+    width: 100%; padding: 10px 12px; font: inherit; color: var(--ink);
+    background: #fff; border: 1px solid var(--line); border-radius: 10px;
+}
+input:focus, select:focus, textarea:focus {
+    outline: none; border-color: var(--brand);
+    box-shadow: 0 0 0 3px rgba(232,89,12,.14);
+}
+textarea { min-height: 84px; resize: vertical; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+.form-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+
+/* Small inline forms used by the "add to cart" buttons */
+.inline-form { display: inline-flex; align-items: center; gap: 6px; margin: 0; }
+.qty-input { width: 62px !important; text-align: center; padding: 8px 6px !important; }
+
+/* Quantity stepper: - [n] + , no JavaScript required */
+.stepper { display: inline-flex; align-items: center; gap: 6px; margin: 0; }
+.step-btn {
+    width: 38px; min-width: 38px; height: 38px; padding: 0;
+    font-size: 1.15rem; font-weight: 700; line-height: 1;
+}
+.min0 { min-width: 0; }
+.rm-label { display: none; }   /* "Remove" text appears on small screens */
+
+/* Compact control used inside admin table rows (stock on/off menu) */
+.select-compact { width: auto; padding: 7px 9px; font-size: .85rem; }
+
+/* Order code on the left, status badge on the right. On desktop the badge
+   has its own column, so the inline copy is mobile-only. */
+.order-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.order-head .badge { display: none; }
+
+/* ---------------------------------------------------------------- tables */
+.table-wrap { overflow-x: auto; }
+table.table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+table.table th, table.table td { padding: 11px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle; }
+table.table th {
+    font-size: .76rem; text-transform: uppercase; letter-spacing: .05em;
+    color: var(--muted); font-weight: 700; background: #fbfaf9;
+}
+table.table tbody tr:hover { background: #fcfbfa; }
+table.table tfoot td { font-weight: 600; }
+table.table .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* --------------------------------------------------------------- badges */
+.badge {
+    display: inline-block; padding: 3px 10px; border-radius: 999px;
+    font-size: .76rem; font-weight: 700; white-space: nowrap;
+}
+.badge-pending   { background: var(--amber-soft); color: var(--amber); }
+.badge-preparing { background: var(--blue-soft);  color: var(--blue); }
+.badge-ready     { background: var(--brand-soft); color: var(--brand-dark); }
+.badge-completed { background: var(--green-soft); color: var(--green); }
+.badge-cancelled { background: var(--red-soft);   color: var(--red); }
+.badge-off       { background: #eef0f4; color: var(--muted); }
+
+/* ---------------------------------------------------------------- stats */
+.stat-grid {
+    display: grid; gap: 14px; margin-bottom: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+}
+.stat {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); padding: 15px 17px;
+}
+.stat .label { color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; }
+.stat .value { font-size: 1.55rem; font-weight: 800; letter-spacing: -.02em; margin-top: 4px; }
+.stat .note  { color: var(--muted); font-size: .78rem; }
+
+/* -------------------------------------------------------------- two-col */
+.two-col { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; align-items: start; }
+.narrow  { max-width: 520px; margin: 0 auto; }
+
+/* ------------------------------------------------------------ empty state */
+.empty {
+    background: var(--card); border: 1px dashed #d8dbe3; border-radius: var(--radius);
+    padding: 46px 24px; text-align: center; color: var(--ink-soft);
+}
+.empty .big { font-size: 2.6rem; display: block; margin-bottom: 10px; }
+
+/* ------------------------------------------------------------- timeline */
+.timeline { list-style: none; margin: 0; padding: 0; }
+.timeline li { display: flex; gap: 11px; padding: 9px 0; border-bottom: 1px dashed var(--line); }
+.timeline li:last-child { border-bottom: 0; }
+.timeline .dot { font-size: 1.05rem; line-height: 1.4; }
+.timeline .done   { color: var(--green); font-weight: 600; }
+.timeline .todo   { color: var(--muted); }
+.timeline .cancel { color: var(--red); font-weight: 600; }
+
+/* --------------------------------------------------------------- totals */
+.totals { margin: 0; }
+.totals .row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px dashed var(--line); }
+.totals .row:last-child { border-bottom: 0; }
+.totals .grand { font-size: 1.15rem; font-weight: 800; padding-top: 12px; }
+.totals .grand span:last-child { color: var(--brand-dark); }
+
+/* ---------------------------------------------------------------- misc */
+.pill-note {
+    display: inline-block; padding: 2px 9px; border-radius: 999px;
+    background: var(--brand-soft); color: var(--brand-dark);
+    font-size: .76rem; font-weight: 700;
+}
+.list-clean { list-style: none; margin: 0; padding: 0; }
+.list-clean li { padding: 8px 0; border-bottom: 1px dashed var(--line); display: flex; justify-content: space-between; gap: 10px; }
+.list-clean li:last-child { border-bottom: 0; }
+
+.footer {
+    border-top: 1px solid var(--line); background: var(--card);
+    padding: 22px 18px; text-align: center;
+}
+.footer p { margin: 0 0 4px; color: var(--ink-soft); font-size: .86rem; }
+
+/* ==========================================================================
+   Mobile
+   ==========================================================================
+   Two rules of thumb drive everything below:
+     1. Nothing may push the page wider than the screen (no sideways scroll).
+     2. Anything you tap is at least 44x44 px, and text inputs are 16px so
+        iOS Safari doesn't zoom the page in when one is focused.
+   Navigation moves from the top bar into a fixed bottom tab bar, because
+   that is where a thumb already is.
+   ========================================================================== */
+
+/* The tab bar is mobile-only; on desktop the top nav does the job. */
+.tabbar { display: none; }
+
+@media (max-width: 780px) {
+
+    :root { --tabbar-h: 58px; }
+
+    body {
+        /* Room for the fixed tab bar (+ the home indicator on notched phones) */
+        padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px));
+    }
+
+    .wrap { padding-left: 16px; padding-right: 16px; }
+    .page { padding: 16px 16px 24px; min-height: 0; }
+    .card { padding: 16px; border-radius: 12px; }
+    .card + .card { margin-top: 14px; }
+    h1 { font-size: 1.3rem; }
+    h2 { font-size: 1.1rem; }
+    .page-head p { font-size: .87rem; }
+
+    /* ---------------------------------------------- compact top bar */
+    .topbar-inner {
+        min-height: 0; padding: 9px 0; flex-wrap: nowrap; gap: 10px;
+    }
+    .brand { min-height: 44px; }        /* the logo is a link, so make it tappable */
+    .brand-mark { width: 34px; height: 34px; font-size: 1.05rem; border-radius: 10px; }
+    .brand strong { font-size: .97rem; }
+    .brand small { display: none; }     /* the tagline is not worth 20px here */
+    .mainnav { display: none; }         /* replaced by the tab bar */
+
+    /* ---------------------------------------------------- tab bar */
+    .tabbar {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+        display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+        background: #fff; border-top: 1px solid var(--line);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        box-shadow: 0 -1px 14px rgba(16,24,40,.07);
+    }
+    .tabbar a {
+        position: relative;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 3px; min-height: var(--tabbar-h); padding: 6px 2px;
+        color: var(--ink-soft); text-decoration: none;
+        font-size: .68rem; font-weight: 700; letter-spacing: .01em;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .tabbar a.active { color: var(--brand-dark); }
+    .tabbar .tab-ico { font-size: 1.28rem; line-height: 1; }
+    .tabbar .tab-badge {
+        position: absolute; top: 5px; left: 50%; margin-left: 5px;
+        min-width: 17px; padding: 0 4px; background: var(--brand); color: #fff;
+        border-radius: 999px; font-size: .63rem; line-height: 17px; text-align: center;
+    }
+
+    /* ---------------------------------------------------- categories
+       One swipeable row instead of four wrapped ones: it saves ~250px of
+       scrolling before the food even starts. */
+    .cat-pills {
+        flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden;
+        margin: 0 -16px 14px; padding: 2px 16px 10px;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .cat-pills::-webkit-scrollbar { display: none; }
+    .cat-pills a {
+        flex: 0 0 auto; min-height: 44px; scroll-snap-align: start;
+        padding: 10px 15px;
+    }
+
+    /* ------------------------------------------------------- page head */
+    .page-head { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 16px; }
+    .page-head .btn { width: 100%; }
+
+    /* ------------------------------------------------------ menu cards
+       Two tidy columns. Price and Add stack, and the whole Add button is
+       thumb-sized. Quantity is adjusted in the cart instead, which is
+       easier on a phone than a tiny number field on every card. */
+    .item-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .item-card { padding: 10px 10px 12px; border-radius: 12px; }
+    .item-photo { margin: -10px -10px 10px; }
+    .item-top { gap: 8px; margin-bottom: 6px; align-items: center; }
+    /* With a photo above it the emoji tile is just clutter, and it steals
+       40px from the dish name on a 2-up card. Cards without a photo keep it. */
+    .item-photo ~ .item-top .item-icon { display: none; }
+    .item-icon { width: 32px; height: 32px; flex: 0 0 32px; font-size: 1rem; border-radius: 9px; }
+    .item-name { font-size: .93rem; overflow-wrap: anywhere; }
+    .item-cat {
+        font-size: .64rem; display: block;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .item-desc { display: none; }        /* photos sell the dish better */
+    .item-foot { flex-direction: column; align-items: stretch; gap: 8px; }
+    .price { font-size: 1.02rem; }
+    .stock-line {
+        font-size: .72rem; margin-top: 1px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .item-foot .inline-form { display: flex; width: 100%; }
+    .item-foot .btn { width: 100%; min-height: 44px; }
+    .item-card .qty-input { display: none; }   /* hidden inputs still submit */
+
+    /* Quantity stepper: comfortable thumb targets at the size people tap */
+    .step-btn { width: 44px; min-width: 44px; height: 44px; font-size: 1.3rem; }
+    .stepper .qty-input { width: 54px !important; }
+    .rm-label { display: inline; }
+
+    /* Order codes and other mono links are tappable targets too */
+    a.mono { display: inline-flex; align-items: center; min-height: 44px; }
+
+    /* Compact controls still need to be thumb-sized on a phone */
+    .select-compact { min-height: 44px; padding: 10px 12px; font-size: 16px; }
+
+    /* Icon picker: 5 across, each a comfortable tap */
+    .icon-picker { grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); gap: 7px; }
+    .icon-option { min-height: 62px; justify-content: center; padding: 8px 2px; }
+    .icon-option-name { display: none; }   /* the drawing is the label on a phone */
+
+    /* ------------------------------------------------------- touch sizes */
+    .btn { min-height: 44px; padding: 11px 16px; }
+    .btn-sm { min-height: 44px; padding: 9px 13px; }
+    .form-actions { gap: 8px; }
+    .form-actions .btn { flex: 1 1 46%; }
+
+    /* iOS zooms the whole page in when a field under 16px takes focus. */
+    input[type=text], input[type=email], input[type=password], input[type=number],
+    input[type=tel], input[type=search], input[type=time], select, textarea {
+        font-size: 16px;
+        padding: 12px;
+    }
+    .qty-input { padding: 10px 6px !important; font-size: 16px !important; }
+    input[type=file] { font-size: 16px; padding: 12px; }
+
+    /* ------------------------------------------------------------ stats */
+    .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .stat { padding: 12px 14px; }
+    .stat .value { font-size: 1.3rem; }
+    .stat .note { font-size: .72rem; }
+
+    /* ------------------------------------------------------------ forms */
+    .two-col { grid-template-columns: 1fr; }
+    .grid-2  { grid-template-columns: 1fr; }
+    .narrow  { max-width: none; }
+
+    /* Grid items default to min-width:auto, which lets a long word inside a
+       card push the whole page wider than the screen. */
+    .two-col > *, .grid-2 > *, .stat-grid > * { min-width: 0; }
+
+    /* --------------------------------------------------------- empty state */
+    .empty { padding: 34px 18px; }
+    .empty .big { font-size: 2.2rem; }
+
+    /* ------------------------------------------------------------ totals */
+    .summary-sticky {
+        position: sticky;
+        bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px) + 10px);
+        z-index: 5;
+    }
+
+    .footer { padding: 20px 16px; }
+
+    /* ============================================================
+       Wide tables become cards
+       Each cell keeps its heading via a data-label attribute, so the
+       table stays a table for screen readers and desktop.
+       ============================================================ */
+    .table-wrap { overflow-x: visible; }
+    .table--stack thead { display: none; }
+    .table--stack, .table--stack tbody, .table--stack tr, .table--stack td {
+        display: block; width: 100%;
+    }
+    .table--stack tr {
+        border: 1px solid var(--line); border-radius: 12px;
+        background: #fff; padding: 12px; margin-bottom: 10px;
+        box-shadow: 0 1px 2px rgba(16,24,40,.04);
+    }
+    .table--stack tbody tr:hover { background: #fff; }
+    .table--stack tr:last-child { margin-bottom: 0; }
+    .table--stack td {
+        border: 0; padding: 5px 0;
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 12px; text-align: left;
+    }
+    .table--stack td::before {
+        content: attr(data-label);
+        flex: 0 0 auto; color: var(--muted);
+        font-size: .7rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .05em;
+    }
+    .table--stack td:not([data-label])::before { content: none; }
+    /* First cell of a row: the headline, full width, no label. */
+    .table--stack td.cell-main {
+        display: block; padding: 0 0 9px; margin-bottom: 7px;
+        border-bottom: 1px dashed var(--line);
+    }
+    /* Buttons at the foot of a row get their own full-width line. */
+    .table--stack td.cell-actions {
+        display: flex; flex-wrap: wrap; gap: 8px;
+        padding: 10px 0 0; margin-top: 5px;
+        border-top: 1px dashed var(--line);
+    }
+    /* Action buttons share the row evenly. The forms around them are inline
+       in the markup, so both the button and its form have to grow. */
+    .table--stack td.cell-actions { align-items: stretch; }
+    .table--stack td.cell-actions > .btn,
+    .table--stack td.cell-actions > form { flex: 1 1 44%; }
+    .table--stack td.cell-actions > form { display: flex; }
+    .table--stack td.cell-actions > form .btn { width: 100%; }
+    .table--stack td.num { text-align: left; }
+    /* A label + value row must be able to wrap; without this a long word in
+       the value (an order summary, a student id) forces the card wider. */
+    .table--stack td { flex-wrap: wrap; }
+    .table--stack td > * { min-width: 0; }
+    .table--stack td, .table--stack td * { overflow-wrap: anywhere; }
+    /* The inline "stock + availability + Save" form is nowrap by default. */
+    .table--stack .inline-form { flex-wrap: wrap; }
+    .table--stack select { max-width: 100%; }
+    /* Two stacked spans inside one cell should read as two lines. */
+    .table--stack td[data-label="Items"] { display: block; }
+    .table--stack td[data-label="Items"] span { display: block; }
+    .table--stack td[data-label="Items"]::before { display: block; margin-bottom: 2px; }
+    /* In the orders list the status already sits next to the order code,
+       so the labelled row would just repeat it. */
+    .orders-list td[data-label="Status"] { display: none; }
+    .orders-list .order-head .badge { display: inline-block; }
+    .table--stack .thumb, .table--stack .thumb-empty { flex: 0 0 52px; width: 52px; height: 52px; }
+}
+
+@media (max-width: 520px) {
+    /* Photo credits would sit three wrapped lines deep on a 2-up card. The
+       full attribution for every demo photo is in assets/menu/credits.json,
+       and the desktop layout shows it on each card. */
+    .photo-credit { display: none; }
+}
+
+@media (max-width: 400px) {
+    .item-name { font-size: .89rem; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (min-width: 781px) {
+    /* Desktop only: the cart summary can afford to sit in the side column. */
+    .tabbar { display: none; }
+}
+

@@ -1,0 +1,28 @@
+# =====================================================================
+#  Safety net for Apache / XAMPP
+# =====================================================================
+#  The web root should be the `public/` folder (see README). If you
+#  instead point Apache at the project root, this file stops visitors
+#  from downloading the SQL files and the PHP source in config/ and
+#  includes/, and from reaching the maintenance scripts in tools/.
+#
+#  Apache 2.4+ syntax.
+# =====================================================================
+
+# ---- Never serve the database dumps or raw source ----------------
+<FilesMatch "\.(sql|md|log|ini|json|lock)$">
+    Require all denied
+</FilesMatch>
+
+# ---- Block direct browsing of the private folders ---------------
+RedirectMatch 403 ^/?(config|includes|database|tools)(/|$)
+
+# ---- Keep directory listings off --------------------------------
+Options -Indexes
+
+# ---- Send everything else into public/ --------------------------
+# Uncomment the following two lines ONLY if your DocumentRoot is the
+# project root rather than the public/ folder.
+#
+# RewriteEngine On
+# RewriteRule ^(?!public/)(.*)$ public/$1 [L]

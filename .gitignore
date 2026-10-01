@@ -1,0 +1,33 @@
+# ---------------------------------------------------------------------
+#  Never commit these.
+# ---------------------------------------------------------------------
+
+# Local database credentials written by termux-start.sh.
+# Contains a password — keep it on your machine only.
+.env
+
+# Runtime state: pid files, logs, MySQL socket
+.run/
+
+# Photos a canteen uploads through the admin. Runtime content, not source.
+public/uploads/
+
+# Display sizes generated from the demo photos by tools/make-thumbs.py.
+# Build output, not source: regenerate with the script. Without them the
+# menu still works — PHP falls back to the full-size photo.
+public/assets/menu/thumbs/
+
+# Scratch output from tools/shot.sh (page snapshots rendered for screenshots).
+public/_shot/
+
+# Error log. Written by includes/security.php; may contain stack traces.
+storage/logs/
+
+# Editor / OS noise
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Built downloads from tools/make-release.sh.
+release/

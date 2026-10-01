@@ -1,0 +1,1 @@
+Resolve the ERROR 1698 (28000): Access denied for user 'root'@'localhost' error when running 'mariadb -u root' in a Termux environment. The database was recently hard-reset by deleting the data directory and re-initializing the system tables using 'mariadb-install-db'. The goal is to successfully log in as 'root' without a password, or resolve the access denial.

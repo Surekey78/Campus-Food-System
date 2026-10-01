@@ -1,0 +1,48 @@
+Build:    campus-food (production)
+Version:  1.0
+Built:    2026-09-30 02:22
+Files:    42
+Unpacked: 4.4M
+
+PHP files in public/ (the web root):
+  public/account.php
+  public/admin/categories.php
+  public/admin/index.php
+  public/admin/items.php
+  public/admin/staff.php
+  public/cart.php
+  public/checkout.php
+  public/index.php
+  public/login.php
+  public/logout.php
+  public/order.php
+  public/orders.php
+  public/register.php
+
+Everything else:
+  ./.gitignore
+  ./.htaccess
+  ./README.md
+  ./WHERE-TO-START.txt
+  ./config/db.php
+  ./database/install.php
+  ./database/schema.sql
+  ./database/upgrade.sql
+  ./docs/demo-menu-photos.png
+  ./docs/icon-picker.png
+  ./docs/icons.png
+  ./docs/mobile-before-after.png
+  ./docs/upgrade-warning.png
+  ./includes/admin_nav.php
+  ./includes/footer.php
+  ./includes/functions.php
+  ./includes/header.php
+  ./includes/icons.php
+  ./includes/security.php
+  ./termux-start.sh
+  ./tools/build-demo-data.py
+  ./tools/fetch-food-photos.py
+  ./tools/make-admin.php
+  ./tools/make-icon-sheet.php
+  ./tools/make-thumbs.py
+  ./tools/regression.sh

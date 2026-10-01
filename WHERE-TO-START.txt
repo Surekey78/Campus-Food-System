@@ -1,0 +1,38 @@
+CAMPUS FOOD SYSTEM — PRODUCTION BUILD
+=====================================
+
+This is the build for a real canteen. It deliberately contains none of
+the demo material:
+
+  * no database/demo-data.sql   — the database starts empty
+  * no sample dish photographs  — menu items show their icon until you
+                                  upload your own photo
+  * no demo accounts            — the accounts are yours
+
+READ THE README. "Quick start" explains the three ways to run it, and
+"Setting up a real canteen" is the part that matters to you. The short
+version on a machine with PHP and MariaDB:
+
+    php database/install.php --no-seed
+    php tools/make-admin.php --promote you@campus.edu   # after registering
+    php -S 0.0.0.0:8000 -t public
+
+Or on a phone, with nothing but Termux:
+
+    ./termux-start.sh
+
+The Termux starter notices this is the production build, skips the sample
+data, and leaves APP_DEBUG switched off so visitors never see a stack
+trace.
+
+HEAVIER CONFIRMATIONS ARE ON BY DEFAULT
+---------------------------------------
+Over HTTPS, the session cookie is marked Secure automatically. Use a
+reverse proxy, or a hosting panel that terminates TLS, so "HTTPS" is true.
+The README's Security section lists what is and is not protected.
+
+BACK UP AFTER YOU GO LIVE
+-------------------------
+    ./termux-start.sh db backup      # mysqldump into .run/backups
+Keep database/, public/uploads/ and .env. Everything else can be
+reinstalled from this zip.
